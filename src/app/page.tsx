@@ -11,5 +11,3 @@ export default function Home() {
     </main>
   );
 }
-
-const generateGrid = (gridSize: number) => {};
