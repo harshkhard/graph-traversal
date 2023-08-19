@@ -1,6 +1,7 @@
 import React from "react";
 import { position } from "./main";
 import { Button, ButtonBase, Typography, styled } from "@mui/material";
+import { convertPositionToString } from "../../algo";
 
 type GridProps = {
   grid: position[][];
@@ -8,6 +9,7 @@ type GridProps = {
   onCellPress: (x: number, y: number) => void;
   startCoord: position | null;
   endCoord: position | null;
+  visitedNodes: Set<string>;
 };
 
 export const Grid = (props: GridProps) => {
@@ -20,6 +22,9 @@ export const Grid = (props: GridProps) => {
               return (
                 <Cell
                   key={index}
+                  isVisited={props.visitedNodes.has(
+                    convertPositionToString(col)
+                  )}
                   isBlocker={col.isBlocker}
                   disabled={props.selectionDisabled}
                   isStartingPoint={
@@ -49,14 +54,18 @@ export const Grid = (props: GridProps) => {
 
 type CellProps = {
   isBlocker: boolean;
-  isStartingPoint?: boolean;
-  isEndingPoint?: boolean;
-  disabled?: boolean;
+  isStartingPoint: boolean;
+  isEndingPoint: boolean;
+  disabled: boolean;
+  isVisited: boolean;
   onPress: () => void;
 };
 
 const Cell = (props: CellProps) => {
   const getBackgroundColor = () => {
+    if (props.isVisited) {
+      return "bg-violet-950";
+    }
     if (props.isBlocker) {
       return "bg-red-900";
     }
@@ -78,7 +87,7 @@ const Cell = (props: CellProps) => {
 
   return (
     <div
-      className={`flex items-center justify-content-center h-20 w-20 border-2 ${getBackgroundColor()}`}
+      className={`flex items-center justify-content-center h-20 w-20 border-2 duration-75	${getBackgroundColor()}`}
     >
       <StyledButton
         disabled={props.disabled ?? false}
